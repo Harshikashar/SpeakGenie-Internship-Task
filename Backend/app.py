@@ -1,20 +1,16 @@
-# --- Core Imports ---
+# backend/app.py - Final Code for Unified Deployment
+
 import os
 import google.generativeai as genai
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# --- Initializations ---
-
-# Load environment variables (like API keys) from the .env file
 load_dotenv()
 
-# Initialize the Flask web application
-app = Flask(__name__)
-
-# Configure Cross-Origin Resource Sharing (CORS) to allow the frontend to communicate with this server.
-# Simpler and more direct CORS configuration for production
+# --- IMPORTANT CHANGE ---
+# Tell Flask that our frontend files are in a folder named 'frontend'
+app = Flask(__name__, static_folder='../frontend', static_url_path='/')
 CORS(app)
 
 # --- AI Model Configuration ---
