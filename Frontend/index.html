@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- Standard Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakGenie AI Tutor</title>
+
+<!-- External Stylesheet and Google Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- This div creates the black outer frame of the mobile phone -->
+    <div class="phone-frame">
+
+<!-- This div represents the actual screen content -->
+    <div class="phone-screen">
+
+<!-- Screen 1: Home / Welcome Screen                       -->
+<!-- This is the first screen the user sees.               -->
+            <div id="home-screen" class="screen active">
+                <img id="mascot-home" src="genie_avatar.png" alt="Genie Mascot">
+                <h1>Welcome!</h1>
+                <p>How would you like to practice today?</p>
+                <button class="mode-select-btn" id="goToChatbotBtn">AI Chatbot</button>
+                <button class="mode-select-btn" id="goToRoleplayBtn">Roleplay Scenarios</button>
+            </div>
+
+<!-- Screen 2: Roleplay Scenario Selection Screen          -->
+<!-- This screen shows the different roleplay options.     -->
+            <div id="roleplay-screen" class="screen">
+                <header><button class="back-btn">←</button> <h2>Roleplay</h2></header>
+                <div class="roleplay-grid">
+                    <div class="roleplay-card" data-scenario="At School"><span>🏫</span><p>At School</p></div>
+                    <div class="roleplay-card" data-scenario="At the Store"><span>🛍️</span><p>At the Store</p></div>
+                    <div class="roleplay-card" data-scenario="At Home"><span>🏠</span><p>At Home</p></div>
+                    <div class="roleplay-card" data-scenario="Meet a new friend"><span>👋</span><p>Meet a New Friend</p></div>
+                    <div class="roleplay-card" data-scenario="Daily yoga"><span>🧘</span><p>Daily Yoga</p></div>
+                </div>
+            </div>
+
+<!-- Screen 3: Main Chat Interface Screen                  -->
+<!-- This screen is used for both chatbot and roleplay.    -->
+            <div id="chat-screen" class="screen">
+                <header><button class="back-btn">←</button> <h2 id="chat-header">AI Chatbot</h2></header>
+
+<!-- Main avatar displayed at the top of the chat -->
+                <div class="ai-main-avatar">
+                    <img src="genie_avatar.png" alt="Genie Avatar">
+                </div>
+
+<!-- Container where chat bubbles will be displayed -->
+                <div id="chat-container"></div>
+
+<!-- Area at the bottom containing the language selector and record button -->
+                <div class="input-area">
+                    <div class="language-container">
+                        <select id="language-select">
+                            <option value="en-US">English</option>
+                            <option value="hi-IN">Hindi</option>
+                            <option value="mr-IN">Marathi</option>
+                            <option value="gu-IN">Gujarati</option>
+                            <option value="ta-IN">Tamil</option>
+                            <option value="te-IN">Telugu</option>
+                            <option value="bn-IN">Bengali</option>
+                        </select>
+                    </div>
+                    <button id="recordButton">🎤</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<!-- Link to the main JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
