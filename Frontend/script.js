@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function getAIResponse(userText) {
         const bodyData = { text: userText, lang: currentLang, mode: currentMode, scenario: currentScenario };
         try {
-            const response = await fetch('http://127.0.0.1:5000/chat', {
+            const response = await fetch('https://speakgenie-internship-task.onrender.com', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bodyData),
