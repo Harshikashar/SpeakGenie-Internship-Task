@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-// --- All screen and button elements ---
-
     const screens = document.querySelectorAll('.screen');
     const goToChatbotBtn = document.getElementById('goToChatbotBtn');
     const goToRoleplayBtn = document.getElementById('goToRoleplayBtn');
@@ -11,21 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const languageSelect = document.getElementById('language-select');
     const roleplayCards = document.querySelectorAll('.roleplay-card');
 
-// --- SCREEN MANAGEMENT LOGIC ---
+    // --- SCREEN MANAGEMENT LOGIC ---
     function showScreen(screenId) {
-        screens.forEach(screen => {
-            screen.classList.remove('active');
-        });
+        screens.forEach(screen => screen.classList.remove('active'));
         const activeScreen = document.getElementById(screenId);
-        if (activeScreen) {
-            activeScreen.classList.add('active');
-        }
+        if (activeScreen) activeScreen.classList.add('active');
     }
 
     goToChatbotBtn.addEventListener('click', () => {
         currentMode = 'free-chat';
         chatHeader.innerText = "AI Chatbot";
-        chatContainer.innerHTML = ''; // Clear previous chat
+        chatContainer.innerHTML = '';
         addMessageToChat('Hello! You can ask me any questions.', 'ai');
         showScreen('chat-screen');
     });
@@ -69,16 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 addMessageToChat(userText, 'user');
                 getAIResponse(userText);
             };
-            recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); addMessageToChat(`Error: ${event.error}`, 'ai'); };
-            recognition.onend = () => { isRecording = false; recordButton.classList.remove('recording'); };
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                addMessageToChat(`Error: ${event.error}`, 'ai');
+            };
+            recognition.onend = () => {
+                isRecording = false;
+                recordButton.classList.remove('recording');
+            };
         } else {
             addMessageToChat("Sorry, your browser doesn't support Speech Recognition.", 'ai');
             recordButton.disabled = true;
         }
     }
 
+    // --- MIC BUTTON CLICK HANDLER ---
     recordButton.addEventListener('click', () => {
         if (!isRecording) {
+            // 🔑 Unlock voice on first user click
+            const unlock = new SpeechSynthesisUtterance("Voice enabled");
+            speechSynthesis.speak(unlock);
+
             recognition?.start();
             isRecording = true;
             recordButton.classList.add('recording');
@@ -97,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentMode = 'roleplay';
             currentScenario = card.getAttribute('data-scenario');
             chatHeader.innerText = currentScenario;
-            chatContainer.innerHTML = ''; // Clear previous chat
+            chatContainer.innerHTML = '';
             
             let langKey = currentLang.startsWith('hi') ? 'hi-IN' : 'en-US';
             const firstMessage = initialMessages[currentScenario][langKey] || initialMessages[currentScenario]['en-US'];
@@ -119,8 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
             const data = await response.json();
             
-            // Add message with potential emojis
-            addMessageToChat(data.text + ' ' + getRandomEmoji(), 'ai'); // Add a random emoji here
+            addMessageToChat(data.text + ' ' + getRandomEmoji(), 'ai');
             speak(data.text, currentLang);
         } catch (error) {
             console.error('Error fetching AI response:', error);
@@ -136,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const avatarDiv = document.createElement('div');
             avatarDiv.classList.add('bubble-avatar');
             const avatarImg = document.createElement('img');
-            avatarImg.src = 'genie_avatar.png'; // Use your downloaded avatar
+            avatarImg.src = 'genie_avatar.png';
             avatarImg.alt = 'Genie';
             avatarDiv.appendChild(avatarImg);
             bubble.appendChild(avatarDiv);
@@ -146,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
             contentDiv.innerText = text;
             bubble.appendChild(contentDiv);
         } else {
-            // For user messages, just text
             bubble.innerText = text;
         }
         
@@ -154,16 +157,36 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
+    // --- UPDATED SPEAK FUNCTION ---
     function speak(text, lang) {
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         }
+
+        const voices = speechSynthesis.getVoices();
+        const selectedVoice = voices.find(v => v.lang === lang);
+
+        if (!selectedVoice) {
+            console.warn(`No voice available for ${lang}, showing text only.`);
+            return; // ❌ skip speaking if no voice
+        }
+
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
+        utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice.lang;
+
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+
         speechSynthesis.speak(utterance);
     }
 
-    // Function to get a random positive emoji
+    // Debug: see which voices browser supports
+    speechSynthesis.onvoiceschanged = () => {
+        console.log("Voices available:", speechSynthesis.getVoices());
+    };
+
     function getRandomEmoji() {
         const emojis = ['😊', '🌟', '👍', '💡', '💬', '✨', '😃'];
         return emojis[Math.floor(Math.random() * emojis.length)];
